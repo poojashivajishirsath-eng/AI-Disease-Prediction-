@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f0f4f7;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .card {
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            padding: 30px;
+        }
+        .result-box {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 20px 30px;
+            border-radius: 12px;
+            color: white;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .disease {
+            background-color: #f44336;
+        }
+        .no-disease {
+            background-color: #4CAF50;
+        }
+        .low {
+            background-color: #4CAF50;
+        }
+        .medium {
+            background-color: #FFC107;
+            color: black;
+        }
+        .high {
+            background-color: #F44336;
+        }
+        .risk {
+            font-size: 18px;
+            margin-top: 15px;
+        }
+        .probability-info {
+            font-size: 14px;
+            color: #555;
+            margin-top: 5px;
+        }
+        .disclaimer {
+            font-size: 12px;
+            color: #777;
+            margin-top: 20px;
+        }
+        .btn-back {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container text-center">
+    <div class="card">
+        <h2>Prediction Form</h2>
+
+        <!-- FORM -->
+        <form method="POST" onsubmit="return validateForm()">
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <input type="number" name="Pregnancies" class="form-control"
+                           placeholder="Pregnancies (count)" required>
+                </div>
+
+                <div class="col-md-3">
+                    <input type="number" name="Glucose" class="form-control"
+                           placeholder="Glucose (mg/dL)" required>
+                </div>
+
+                <div class="col-md-3">
+                    <input type="number" name="BloodPressure" class="form-control"
+                           placeholder="Blood Pressure (mmHg)" required>
+                </div>
+
+                <div class="col-md-3">
+                    <input type="number" name="SkinThickness" class="form-control"
+                           placeholder="Skin Thickness (mm)" required>
+                </div>
+
+                <div class="col-md-3">
+                    <input type="number" name="Insulin" class="form-control"
+                           placeholder="Insulin (µU/mL)" required>
+                </div>
+
+                <div class="col-md-3">
+                    <input type="number" step="0.01" name="BMI" class="form-control"
+                           placeholder="BMI (kg/m²)" required>
+                </div>
+
+                <div class="col-md-3">
+                    <input type="number" step="0.01" name="DPF" class="form-control"
+                           placeholder="Diabetes Pedigree Function" required>
+                </div>
+
+                <div class="col-md-3">
+                    <input type="number" name="Age" class="form-control"
+                           placeholder="Age (years)" required>
+                </div>
+            </div>
+
+            <div class="btn-back">
+                <button type="submit" class="btn btn-primary">Predict</button>
+                <a href="/logout" class="btn btn-danger">Logout</a>
+            </div>
+        </form>
+
+        <!-- RESULT -->
+        {% if prediction %}
+            <div class="result-box 
+                {% if probability < 40 %}low
+                {% elif probability < 70 %}medium
+                {% else %}high{% endif %}">
+                {{ prediction }}
+            </div>
+
+            {% if probability is not none %}
+                <div class="risk">
+                    Risk Probability: <strong>{{ probability }}%</strong>
+                </div>
+
+                <p class="probability-info">
+                    Risk probability indicates the likelihood of diabetes based on the model.
+                </p>
+            {% endif %}
+        {% endif %}
+
+        <!-- DISCLAIMER -->
+        <p class="disclaimer">
+            ⚠ This prediction is based on a machine learning model and should not replace professional medical advice.
+        </p>
+    </div>
+</div>
+
+<!-- VALIDATION SCRIPT -->
+<script>
+function validateForm() {
+    const inputs = document.querySelectorAll("input");
+    for (let input of inputs) {
+        if (input.value === "" || isNaN(input.value)) {
+            alert("Please enter valid numeric values in all fields.");
+            return false;
+        }
+    }
+    return true;
+}
+</script>
+
+</body>
+</html>
